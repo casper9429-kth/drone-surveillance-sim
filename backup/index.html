@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Drone Sim</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="dashboard">
+        <div class="stat-item">
+            <div class="stat-label">DRONES</div>
+            <div class="stat-value" id="droneCount">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">ALERTS</div>
+            <div class="stat-value" id="alertCount">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">COVERAGE</div>
+            <div class="stat-value" id="coveragePercent">0%</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">STATUS</div>
+            <div class="stat-value" id="systemStatus">ACTIVE</div>
+        </div>
+    </div>
+    <canvas id="cityCanvas"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
+>
