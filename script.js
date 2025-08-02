@@ -41,9 +41,14 @@ class City {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         
+        // Complete simulation reload on resize
         if (this.buildings && this.buildings.length > 0) {
             this.buildings = [];
+            this.drones = [];
             this.sensors = [];
+            this.trails = [];
+            this.alertCount = 0;
+            this.totalAlerts = 0;
             this.generate();
         }
     }
