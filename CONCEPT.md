@@ -12,7 +12,7 @@ Deploying and managing a fleet of robots is complex and expensive. Businesses la
 
 Our solution is a single, unified platform that leverages a shared network of autonomous drones and robots. Think of it as an "App Store" for robotic services. We deploy the hardware across a community, like Sollentuna. The user simply chooses the applications they need and deploys them using the available robots in the network. 
 
-This shared-use model makes advanced robotic solutions accessible and affordable for everyone, from local police to construction companies. We take care of the infrastructure, licensing, and maintenance.
+This shared-use model makes advanced robotic solutions accessible and affordable for everyone, from local police and construction companies to home owners wanting to inspect their roofs. We take care of the infrastructure, licensing, and maintenance.
 
 ![Sollentuna Drone Coverage](./docs/sollentuna_coverage.png)
 *A map of Sollentuna with drone coverage areas.*
@@ -26,15 +26,13 @@ Our platform makes it simple to deploy robots for any task.
 3. **Schedule the Mission**: The mission can be scheduled through our app for immediate, future, or recurring execution.
 4.  **Autonomous Execution**: The robot autonomously navigates to the location and executes the mission, collecting data through its sensors.
 5. **Data & Control**: All data is logged, and application specific data is analyzed and summarized for you. 
-
+6. **Payment**: You pay for the service based on the application used and the duration of the mission.
 
 
 
 ## The App Store: A Marketplace for Robotic Solutions
 
-
-
-- **Security**: Build apps for autonomous patrols, alarm verification, and threat assessment and operator handoff.
+- **Security**: Apps for autonomous patrols, alarm verification, and threat assessment and operator handoff.
 - **Emergency Services**: Create tools for aerial reconnaissance at crime scenes, accidents, or during search and rescue operations or just remote control, monitoring and enchancing situational awareness.
 - **Infrastructure Inspection**: Develop solutions for automating the inspection of power lines, pipelines, and construction sites.
 - **Logistics & Monitoring**: Design applications for traffic monitoring, asset tracking, and more.
@@ -44,8 +42,9 @@ Our platform makes it simple to deploy robots for any task.
 ![App Store](./docs/app_store.png)
 *An image of the Robot Cloud System app store.*
 
+## Allocation and Scheduling of Robots
+Customers can allocate robots for their specific tasks for long time periods to guarantee availability for a higher premium. This might be beneficial for emergency services, security companies, or critical infrastructure monitoring.
 
-## Get Started
+For more cost sensitive tasks, customers can schedule missions using the app store. The system will automatically allocate the best available robot for the task based on location, availability, and required capabilities similar to how spot pricing works in the cloud computing industry.
 
-Build the future of automation with us. Contact us today to learn how you can leverage the Robot Cloud System for your business.
 
