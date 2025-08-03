@@ -2,15 +2,15 @@ const CONFIG = {
     NUM_DRONES: 4,
     NUM_BUILDINGS: 12,
     DRONE_SPEED: 1.8,
-    FOV_WIDTH_DEG: 80,
-    FOV_LENGTH: 130,
-    TURN_CHANCE: 0.05,
-    MAX_TURN_ANGLE: 0.3,
-    TARGET_DISTANCE: 50,
-    SENSOR_PROBABILITY: 0.15,
-    SENSOR_FOV_WIDTH_DEG: 90,
-    SENSOR_FOV_LENGTH: 70,
-    SCAN_DURATION_MS: 3000
+    FOV_WIDTH_DEG: 85, // Wider FOV for better surveillance coverage
+    FOV_LENGTH: 140,   // Extended range for thermal/night vision capability
+    TURN_CHANCE: 0.04, // More focused patrol patterns
+    MAX_TURN_ANGLE: 0.25,
+    TARGET_DISTANCE: 45,
+    SENSOR_PROBABILITY: 0.18, // More sensors for critical infrastructure
+    SENSOR_FOV_WIDTH_DEG: 95,
+    SENSOR_FOV_LENGTH: 80,
+    SCAN_DURATION_MS: 4000 // Longer scan time for thorough inspection
 };
 
 class City {
@@ -88,16 +88,16 @@ class City {
     }
     
     generate() {
-        // Generate buildings
+        // Generate buildings (critical infrastructure)
         for (let i = 0; i < CONFIG.NUM_BUILDINGS; i++) {
-            const w = 30 + Math.random() * 50;
-            const h = 25 + Math.random() * 35;
+            const w = 35 + Math.random() * 45;
+            const h = 30 + Math.random() * 40;
             this.buildings.push({
                 x: Math.random() * (this.width - w - 100) + 50,
                 y: Math.random() * (this.height - h - 100) + 50,
                 width: w,
                 height: h,
-                type: ['Power', 'Control', 'Storage', 'Security'][Math.floor(Math.random() * 4)]
+                type: ['Power Grid', 'Control Center', 'Data Center', 'Security Hub', 'Comm Tower', 'Storage'][Math.floor(Math.random() * 6)]
             });
         }
         
@@ -189,18 +189,29 @@ class City {
     }
     
     draw() {
-        // Clear screen
-        this.ctx.fillStyle = '#111';
+        // Subtle dark background for minimalistic design
+        this.ctx.fillStyle = '#0a0a0a';
         this.ctx.fillRect(0, 0, this.width, this.height);
         
-        // Draw trails
-        this.trails.forEach(trail => {
+        // Very subtle drone trails
+        this.trails.forEach((trail, droneIndex) => {
             if (trail.length < 2) return;
-            this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+            
+            const drone = this.drones[droneIndex];
+            let trailColor = 'rgba(60, 120, 180, 0.08)'; // Subtle patrol trail
+            
+            if (drone && drone.isTracking) {
+                trailColor = 'rgba(80, 180, 120, 0.12)'; // Subtle tracking trail
+            } else if (drone && drone.isInvestigating) {
+                trailColor = 'rgba(180, 120, 60, 0.1)'; // Subtle investigation trail
+            }
+            
+            this.ctx.strokeStyle = trailColor;
             this.ctx.lineWidth = 1;
             this.ctx.beginPath();
+            
             for (let i = 0; i < trail.length - 1; i++) {
-                this.ctx.globalAlpha = (i / trail.length) * 0.3;
+                this.ctx.globalAlpha = (i / trail.length) * 0.2;
                 if (i === 0) this.ctx.moveTo(trail[i].x, trail[i].y);
                 else this.ctx.lineTo(trail[i].x, trail[i].y);
             }
@@ -208,21 +219,21 @@ class City {
             this.ctx.globalAlpha = 1;
         });
         
-        // Draw buildings
+        // Minimal buildings (critical infrastructure)
         this.buildings.forEach(b => {
-            this.ctx.fillStyle = '#333';
+            // Very subtle building styling
+            this.ctx.fillStyle = '#151515';
             this.ctx.fillRect(b.x, b.y, b.width, b.height);
-            this.ctx.strokeStyle = '#666';
+            
+            // Minimal border
+            this.ctx.strokeStyle = '#222';
+            this.ctx.lineWidth = 1;
             this.ctx.strokeRect(b.x, b.y, b.width, b.height);
             
-            // Label
-            this.ctx.fillStyle = '#fff';
-            this.ctx.font = '10px monospace';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(b.type, b.x + b.width/2, b.y + b.height/2);
+            // No building labels for minimal design
         });
         
-        // Draw sensors and drones
+        // Draw sensors and drones with reduced intensity
         this.sensors.forEach(s => s.draw(this.ctx));
         this.drones.forEach(d => d.draw(this.ctx));
     }
@@ -381,10 +392,17 @@ class Drone {
     }
     
     draw(ctx) {
-        // FOV
+        // Minimal FOV with very subtle visibility
         ctx.save();
-        ctx.globalAlpha = 0.15;
-        ctx.fillStyle = '#0ff';
+        ctx.globalAlpha = this.isTracking ? 0.06 : 0.03;
+        
+        // Subtle gradient FOV
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.fovDistance);
+        gradient.addColorStop(0, this.isTracking ? '#4a9eff' : '#3a7acc');
+        gradient.addColorStop(0.7, this.isTracking ? '#2a6ecc' : '#2a5599');
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.arc(this.x, this.y, this.fovDistance, 
@@ -394,32 +412,45 @@ class Drone {
         ctx.fill();
         ctx.restore();
         
-        // Drone body
-        let color = '#00f';
-        if (this.isTracking) color = '#0f0';
-        else if (this.isInvestigating) color = this.scanStart ? '#f0f' : '#f80';
+        // Minimal drone design
+        let color = '#4a7cb8'; // Subtle patrol blue
+        if (this.isTracking) color = '#5bb85c'; // Subtle target lock green
+        else if (this.isInvestigating) {
+            color = this.scanStart ? '#b85c5c' : '#b8925c'; // Subtle scanning/moving colors
+        }
         
+        // Simple drone body without glow effects
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.size - 2, 0, Math.PI * 2);
         ctx.fill();
         
-        // Direction
+        // Minimal inner core
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size - 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Center dot
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 1, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Minimal direction indicator
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.7;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.lineTo(
-            this.x + Math.cos(this.angle) * (this.size + 6),
-            this.y + Math.sin(this.angle) * (this.size + 6)
+            this.x + Math.cos(this.angle) * (this.size + 4),
+            this.y + Math.sin(this.angle) * (this.size + 4)
         );
         ctx.stroke();
+        ctx.globalAlpha = 1;
         
-        // ID
-        ctx.fillStyle = '#fff';
-        ctx.font = '8px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(this.id, this.x, this.y - this.size - 5);
+        // Remove drone ID and status text for minimal design
     }
 }
 
@@ -452,13 +483,20 @@ class Sensor {
     }
     
     draw(ctx) {
-        this.pulse += 0.1;
-        const pulseSize = Math.sin(this.pulse) * 5 + 10;
+        this.pulse += 0.05; // Slower pulse for minimal effect
+        const pulseSize = Math.sin(this.pulse) * 4 + 8;
         
-        // FOV
+        // Very subtle sensor FOV
         ctx.save();
-        ctx.globalAlpha = this.isAlerting ? 0.5 : 0.2;
-        ctx.fillStyle = this.isAlerting ? '#f00' : '#080';
+        ctx.globalAlpha = this.isAlerting ? 0.15 : 0.06;
+        
+        // Minimal gradient FOV for sensors
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.fovDistance);
+        gradient.addColorStop(0, this.isAlerting ? '#cc6666' : '#66aa66');
+        gradient.addColorStop(0.8, this.isAlerting ? '#994444' : '#447744');
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.arc(this.x, this.y, this.fovDistance, 
@@ -468,17 +506,32 @@ class Sensor {
         ctx.fill();
         ctx.restore();
         
-        // Pulse
-        ctx.strokeStyle = this.isAlerting ? '#f00' : '#0f0';
+        // Minimal pulse effect
+        ctx.save();
+        ctx.globalAlpha = this.isAlerting ? 0.3 : 0.15;
+        ctx.strokeStyle = this.isAlerting ? '#cc6666' : '#66aa66';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(this.x, this.y, pulseSize, 0, Math.PI * 2);
         ctx.stroke();
+        ctx.restore();
         
-        // Sensor body
-        ctx.fillStyle = this.isAlerting ? '#f00' : '#0f0';
+        // Simple sensor body without glow
+        ctx.fillStyle = this.isAlerting ? '#cc6666' : '#66aa66';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Minimal inner sensor core
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size - 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Center dot
+        ctx.fillStyle = this.isAlerting ? '#cc6666' : '#66aa66';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 1, 0, Math.PI * 2);
         ctx.fill();
     }
 }
